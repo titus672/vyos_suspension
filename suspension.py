@@ -45,5 +45,13 @@ def main():
         commands += "save\n"
         print(commands)
     else:
-        print("exit")
+        commands = ""
+        commands += "source /opt/vyatta/etc/functions/script-template\n"
+        commands += "configure\n"
+        commands += "delete firewall group address-group SUSPENDED_IPS\n"
+        commands += "set firewall group address-group SUSPENDED_IPS\n"
+        commands += f"set firewall group address-group SUSPENDED_IPS address 172.16.0.254\n"
+        commands += "commit\n"
+        commands += "save\n"
+        print(commands)
 main()
