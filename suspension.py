@@ -43,6 +43,7 @@ def main():
             commands += f"set firewall group address-group SUSPENDED_IPS address {ip}\n"
         commands += "commit\n"
         commands += "save\n"
+        commands += "exit\n"
         print(commands)
     else:
         commands = ""
@@ -53,5 +54,6 @@ def main():
         commands += f"set firewall group address-group SUSPENDED_IPS address 172.16.0.254\n"
         commands += "commit\n"
         commands += "save\n"
+        commands += "exit\n"
         print(commands)
 main()
