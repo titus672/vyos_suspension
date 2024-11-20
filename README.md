@@ -19,6 +19,7 @@ These rules are only created once. To suspend or unsuspend devices, add or remov
 ## running these commands
 ```
 set firewall group address-group SUSPENDED_IPS address 172.16.0.1
+set firewall group domain-group WHITELIST_DOMAINS add uisp.example.com
 
 set nat destination rule 10 destination port 80
 set nat destination rule 10 protocol tcp
@@ -27,7 +28,7 @@ set nat destination rule 10 translation address "your uisp ip address"
 set nat destination rule 10 translation port 81
 
 set firewall ipv4 forward filter rule 20 action accept
-set firewall ipv4 forward filter rule 20 destination fqdn "your.uisp.example.com"
+set firewall ipv4 forward filter rule 20 destination group domain-group WHITELIST_DOMAINS
 
 set firewall ipv4 forward filter rule 30 action accept
 set firewall ipv4 forward filter rule 30 destination port 53
