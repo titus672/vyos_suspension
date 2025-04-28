@@ -23,7 +23,8 @@ def get_suspended_ips():
     suspended_sites = []
     suspended_devices = []
     for r in result:
-        suspended_sites.append(r["unmsClientSiteId"])
+        if r["unmsClientSiteId"]:
+            suspended_sites.append(r["unmsClientSiteId"])
 
     for s in suspended_sites:
         suspended_devices.append(nms_connector(f"devices?siteId={s}"))
