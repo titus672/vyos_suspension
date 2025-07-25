@@ -2,6 +2,8 @@
 import requests
 base_url = "uisp.example.com"
 uisp_key = ""
+DISCORD_URL = None
+# DISCORD_URL = "https://discord_webhook"
 
 
 def nms_connector(endpoint, action="get"):
@@ -16,6 +18,15 @@ def crm_connector(endpoint, action="get"):
     headers = {"x-auth-token": uisp_key, "accept": "application/json"}
     request = requests.request(action, url, headers=headers)
     return request.json()
+
+
+def discord_post(url, message):
+    if url is not None:
+        contents = {"content": str(message)}
+        requests.post(url, json=contents)
+        print("Error:", message)
+    else:
+        print("Error:", message)
 
 
 def get_suspended_ips():
@@ -63,4 +74,8 @@ def main():
         print(commands)
 
 
-main()
+try:
+    main()
+except Exception as e:
+    discord_post(DISCORD_URL, e)
+    exit(1)
