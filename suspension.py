@@ -1,21 +1,22 @@
 #! /usr/bin/env python3
 import requests
 base_url = "uisp.example.com"
-uisp_key = ""
+nms_key = ""
+crm_key = ""
 DISCORD_URL = None
 # DISCORD_URL = "https://discord_webhook"
 
 
 def nms_connector(endpoint, action="get"):
     url = f"https://{base_url}/nms/api/v2.1/{endpoint}"
-    headers = {"x-auth-token": uisp_key, "accept": "application/json"}
+    headers = {"x-auth-token": nms_key, "accept": "application/json"}
     request = requests.request(action, url, headers=headers)
     return request.json()
 
 
 def crm_connector(endpoint, action="get"):
     url = f"https://{base_url}/crm/api/v1.0/{endpoint}"
-    headers = {"x-auth-token": uisp_key, "accept": "application/json"}
+    headers = {"x-auth-token": crm_key, "accept": "application/json"}
     request = requests.request(action, url, headers=headers)
     return request.json()
 
