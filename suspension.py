@@ -23,7 +23,10 @@ def crm_connector(endpoint, action="get"):
 
 def discord_post(url, message):
     if url is not None:
-        contents = {"content": str(message)}
+        contents = {
+            "content": str(message),
+            "username": "vyos_suspension",
+        }
         requests.post(url, json=contents)
         print("Error:", message)
     else:
