@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 import requests
+import traceback
 base_url = "uisp.example.com"
 nms_key = ""
 crm_key = ""
@@ -81,5 +82,6 @@ def main():
 try:
     main()
 except Exception as e:
-    discord_post(DISCORD_URL, e)
+    tb = traceback.format_exc()
+    discord_post(DISCORD_URL, f"Fatal:\n```{tb}```")
     exit(1)
