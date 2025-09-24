@@ -1,24 +1,35 @@
 #! /usr/bin/env python3
 import requests
 import traceback
-base_url = "uisp.example.com"
-nms_key = ""
-crm_key = ""
-DISCORD_URL = None
-# DISCORD_URL = "https://discord_webhook"
+import json
+
+
+class Config:
+    def __init__(self):
+        with open("config.json", "r") as config:
+            self.config = json.load(config)
+        self.uisp_url = self.config.get("uisp_url", None)
+        self.nms_key = self.config.get("nms_key", None)
+        self.crm_key = self.config.get("crm_key", None)
+        self.discord_url = self.config.get("discord_url", None)
+
+
+CONFIG = Config()
 
 
 def nms_connector(endpoint, action="get"):
-    url = f"https://{base_url}/nms/api/v2.1/{endpoint}"
-    headers = {"x-auth-token": nms_key, "accept": "application/json"}
+    url = f"https://{CONFIG.uisp_url}/nms/api/v2.1/{endpoint}"
+    headers = {"x-auth-token": CONFIG.nms_key, "accept": "application/json"}
     request = requests.request(action, url, headers=headers)
+    request.raise_for_status()
     return request.json()
 
 
 def crm_connector(endpoint, action="get"):
-    url = f"https://{base_url}/crm/api/v1.0/{endpoint}"
-    headers = {"x-auth-token": crm_key, "accept": "application/json"}
+    url = f"https://{CONFIG.uisp_url}/crm/api/v1.0/{endpoint}"
+    headers = {"x-auth-token": CONFIG.crm_key, "accept": "application/json"}
     request = requests.request(action, url, headers=headers)
+    request.raise_for_status()
     return request.json()
 
 
@@ -81,7 +92,13 @@ def main():
 
 try:
     main()
-except Exception as e:
+except requests.exceptions.HTTPError as httperror:
+    discord_post(CONFIG.discord_url, f"HTTPError:\n```{httperror}```")
+    exit(1)
+except requests.exceptions.ConnectionError as timeouterr:
+    discord_post(CONFIG.discord_url, f"ConnErr:\n```{timeouterr}```")
+    exit(1)
+except Exception:
     tb = traceback.format_exc()
-    discord_post(DISCORD_URL, f"Fatal:\n```{tb}```")
+    discord_post(CONFIG.discord_url, f"Fatal:\n```{tb}```")
     exit(1)
