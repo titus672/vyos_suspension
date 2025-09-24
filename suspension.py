@@ -12,6 +12,7 @@ class Config:
         self.nms_key = self.config.get("nms_key", None)
         self.crm_key = self.config.get("crm_key", None)
         self.discord_url = self.config.get("discord_url", None)
+        self.discord_user = self.config.get("discord_user", "vyos_suspension")
 
 
 CONFIG = Config()
@@ -33,13 +34,13 @@ def crm_connector(endpoint, action="get"):
     return request.json()
 
 
-def discord_post(url, message):
-    if url is not None:
+def discord_post(message):
+    if CONFIG.discord_url is not None:
         contents = {
             "content": str(message),
-            "username": "vyos_suspension",
+            "username": CONFIG.discord_user,
         }
-        requests.post(url, json=contents)
+        requests.post(CONFIG.discord_url, json=contents)
         print("Error:", message)
     else:
         print("Error:", message)
@@ -93,12 +94,12 @@ def main():
 try:
     main()
 except requests.exceptions.HTTPError as httperror:
-    discord_post(CONFIG.discord_url, f"HTTPError:\n```{httperror}```")
+    discord_post(f"HTTPError:\n```{httperror}```")
     exit(1)
 except requests.exceptions.ConnectionError as timeouterr:
-    discord_post(CONFIG.discord_url, f"ConnErr:\n```{timeouterr}```")
+    discord_post(f"ConnErr:\n```{timeouterr}```")
     exit(1)
 except Exception:
     tb = traceback.format_exc()
-    discord_post(CONFIG.discord_url, f"Fatal:\n```{tb}```")
+    discord_post(f"Fatal:\n```{tb}```")
     exit(1)
